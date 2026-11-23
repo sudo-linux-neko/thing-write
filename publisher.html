@@ -1,0 +1,225 @@
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<!-- Copyright (C) 2026 Vaibhav Agarwal -->
+
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>neko-fin Publisher — add a blog, keep same URL</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="stylesheet" href="styles.css">
+<script>try{var t=localStorage.getItem("nf-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+.pub{max-width:1080px;margin:0 auto;padding:20px}
+.card2{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin:14px 0}
+.howto ol{margin:8px 0 8px 20px;color:var(--mut)}
+.howto code,.sheet code,code{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-size:.85em}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:900px){.grid2{grid-template-columns:1fr}}
+label{display:block;margin:10px 0;font-weight:700;font-size:.88rem}
+input,textarea,select{width:100%;margin-top:6px;background:var(--bg2);border:1px solid var(--line);color:var(--tx);border-radius:10px;padding:10px 12px;font:inherit}
+textarea{line-height:1.6}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.preview{background:var(--bg2);border:1px dashed var(--line);border-radius:12px;padding:14px;min-height:180px}
+.preview h2{margin-top:1em}
+.preview a{color:var(--acc)}
+.bigbtn{background:var(--acc);color:#04120b;border:0;font-weight:800;padding:13px 18px;border-radius:12px;cursor:pointer;font-size:1rem}
+.ghostbtn{background:transparent;color:var(--tx);border:1px solid var(--line);border-radius:12px;padding:11px 15px;cursor:pointer;font-weight:700}
+.warnbox{border:1px solid #ffb02066;background:#ffb02012;border-radius:12px;padding:12px 14px;color:var(--tx);font-size:.9rem}
+.okbox{border:1px solid #00e68a55;background:#00e68a10;border-radius:12px;padding:12px 14px;font-size:.9rem}
+#loginWrap{max-width:440px;margin:8vh auto}
+.draftrow{display:flex;justify-content:space-between;gap:8px;border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin:6px 0;font-size:.86rem;align-items:center}
+.draftrow button{background:transparent;border:1px solid var(--line);color:var(--tx);border-radius:8px;padding:4px 8px;cursor:pointer;margin-left:6px}
+.err{color:#ff6b6b;font-size:.86rem}
+</style>
+</head>
+<body>
+<div class="riskbar">Educational only — not financial advice. <a href="./#disclaimer">Disclaimer</a></div>
+<main class="pub">
+
+<div id="loginWrap" class="card2">
+<h1>🔒 neko-fin Publisher</h1>
+<p class="muted">Same login as the Write button. Browser-local only — not real server security.</p>
+<label>Username<input id="u" value="nekofin" autocomplete="username"></label>
+<label>Password<input id="p" type="password" autocomplete="current-password" placeholder="••••••••"></label>
+<p class="err" id="e" hidden></p>
+<div class="row"><button class="bigbtn" id="go">Unlock</button><a class="ghostbtn" href="./#/">← Back to blog</a></div>
+</div>
+
+<div id="app" hidden>
+<h1>📝 Add a new blog — keep same URL</h1>
+<div class="okbox"><strong>Your site:</strong> <a href="https://cerulean-jalebi-342b59.netlify.app/" target="_blank" rel="noopener">cerulean-jalebi-342b59.netlify.app</a> — to <u>keep this URL</u>, upload the ZIP below to <strong>that same site → Deploys tab</strong>, NOT to <code>app.netlify.com/drop</code> (that makes a new URL).</div>
+
+<div class="card2 howto">
+<h2>Easy way (3 taps)</h2>
+<ol>
+<li>Write below (or <strong>Import .txt / .md</strong>).</li>
+<li>Press <strong>Save post</strong> (repeat for more posts).</li>
+<li>Press <strong>⬇ Download update ZIP (one file)</strong> → go to Netlify → your site → <strong>Deploys</strong> → drag that ZIP there. Same URL, new post live in ~30 sec.</li>
+</ol>
+<p class="muted small">The ZIP contains your full site + new post(s) + updated <code>posts.json</code>. Single file upload. Free-plan safe (~20–40KB).</p>
+</div>
+
+<div class="grid2">
+<div class="card2">
+<h2>1 · Write</h2>
+<label>Title<input id="fTitle" placeholder="e.g. Why I avoid tips"></label>
+<div class="row2">
+<label>Category<select id="fCat"><option>Market</option><option>Misc</option></select></label>
+<label>Date<input id="fDate" type="date"></label>
+</div>
+<label>Tags (comma)<input id="fTags" placeholder="nifty, risk, beginner"></label>
+<label>Excerpt<textarea id="fExcerpt" rows="2" placeholder="1–2 line summary for cards"></textarea></label>
+<label>Links & references (one per line: Title | https://…)<textarea id="fRefs" rows="3" placeholder="NSE | https://www.nseindia.com"></textarea></label>
+<label>Body (Markdown)<textarea id="fBody" rows="11" placeholder="## My opinion&#10;Write here…"></textarea></label>
+<div class="row">
+<button class="ghostbtn" id="impBtn">📥 Import .txt / .md</button>
+<input type="file" id="fileIn" accept=".txt,.md,.markdown" hidden>
+<button class="ghostbtn" id="clearBtn">Clear</button>
+<button class="bigbtn" id="saveBtn">💾 Save post</button>
+</div>
+<div class="card2" style="margin-top:14px">
+<h3>Queued in this browser</h3>
+<div id="drafts"></div>
+</div>
+</div>
+<div>
+<div class="card2">
+<h2>2 · Preview</h2>
+<div class="preview" id="prev"></div>
+</div>
+<div class="card2">
+<h2>3 · Download (one file)</h2>
+<div class="warnbox" id="status">Loading existing posts…</div>
+<div class="row">
+<button class="bigbtn" id="zipBtn">⬇ Download update ZIP (one file)</button>
+<button class="ghostbtn" id="mdBtn">Single .md only</button>
+<button class="ghostbtn" id="jsonBtn">posts.json only</button>
+</div>
+<p class="muted small">Upload target: Netlify Dashboard → <strong>cerulean-jalebi-342b59</strong> → <strong>Deploys</strong> → drag ZIP into the “Drag and drop” box. URL does not change. If you drop at <code>netlify.com/drop</code> homepage you’ll get a NEW random URL — avoid that.</p>
+<div class="row"><a class="ghostbtn" href="./#/">← View blog</a><button class="ghostbtn" id="lockBtn">Lock 🔒</button></div>
+</div>
+</div>
+</div>
+</main>
+<div id="toast" class="toast" hidden></div>
+<script>
+(function(){
+"use strict";
+const $=s=>document.querySelector(s);
+function toast(m){const t=$("#toast");t.textContent=m;t.hidden=false;clearTimeout(t._x);t._x=setTimeout(()=>t.hidden=true,2400)}
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+async function sha(s){const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s));return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,"0")).join("")}
+const DEF_U="nekofin",DEF_P="123456789@neko.me.to@yolo-hi-meow";
+async function getAuth(){try{const a=JSON.parse(localStorage.getItem("nf_auth")||"null");if(a&&a.u&&a.pHash)return a}catch(e){}return{u:DEF_U,pHash:await sha(DEF_P)}}
+function isAuthed(){try{return sessionStorage.getItem("nf_session")==="1"}catch(e){return false}}
+function today(){return new Date().toISOString().slice(0,10)}
+function slug(s){return String(s||"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,60)||("post-"+Date.now())}
+
+/* mini md for preview */
+function md(src){let h=esc(src);h=h.replace(/```(\w*)\n([\s\S]*?)```/g,(m,l,c)=>"<pre><code>"+c.trim()+"</code></pre>");
+const lines=h.split("\n");let out="",ul=false,ol=false;
+for(let ln of lines){
+if(/^#{1,4}\s/.test(ln)){if(ul){out+="</ul>";ul=false}if(ol){out+="</ol>";ol=false}const m=ln.match(/^(#{1,4})\s(.*)/);out+="<h"+(m[1].length+1)+">"+il(m[2])+"</h"+(m[1].length+1)+">";continue}
+if(/^&gt;\s?/.test(ln)){out+="<blockquote>"+il(ln.replace(/^&gt;\s?/,""))+"</blockquote>";continue}
+if(/^---+$/.test(ln.trim())){out+="<hr>";continue}
+if(/^[-*]\s+/.test(ln)){if(!ul){out+="<ul>";ul=true}out+="<li>"+il(ln.replace(/^[-*]\s+/,""))+"</li>";continue}
+if(/^\d+\.\s+/.test(ln)){if(!ol){out+="<ol>";ol=true}out+="<li>"+il(ln.replace(/^\d+\.\s+/,""))+"</li>";continue}
+if(ln.trim()===""){if(ul){out+="</ul>";ul=false}if(ol){out+="</ol>";ol=false}continue}
+if(ul){out+="</ul>";ul=false}if(ol){out+="</ol>";ol=false}
+out+="<p>"+il(ln)+"</p>"}
+if(ul)out+="</ul>";if(ol)out+="</ol>";return out;
+function il(s){return s.replace(/\[([^\]]+)\]\((https?:[^)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>').replace(/\*\*([^*]+)\*\*/g,"<strong>$1</strong>").replace(/`([^`]+)`/g,"<code>$1</code>")}}
+
+function curForm(){
+const refs=$("#fRefs").value.split("\n").map(s=>s.trim()).filter(Boolean).map(l=>{const i=l.indexOf("|");return i>0?{t:l.slice(0,i).trim(),u:l.slice(i+1).trim()}:{t:l,u:l}});
+return{id:slug($("#fTitle").value),title:$("#fTitle").value.trim()||"Untitled",date:$("#fDate").value||today(),category:$("#fCat").value,tags:$("#fTags").value.split(",").map(s=>s.trim()).filter(Boolean),excerpt:$("#fExcerpt").value.trim()||$("#fBody").value.replace(/[#*>`]/g,"").slice(0,140)+"…",refs,body:$("#fBody").value};
+}
+function toMD(p){const r=(p.refs||[]).map(x=>x.t+" | "+x.u).join("; ");return "---\ntitle: \""+p.title.replace(/"/g,"'")+"\"\ndate: "+p.date+"\ncategory: "+p.category+"\ntags: "+(p.tags||[]).join(", ")+"\nexcerpt: \""+(p.excerpt||"").replace(/"/g,"'").slice(0,200)+"\"\nreferences: "+r+"\n---\n\n"+p.body+"\n"}
+function getDrafts(){try{return JSON.parse(localStorage.getItem("nf_posts")||"[]")}catch(e){return[]}}
+function setDrafts(a){localStorage.setItem("nf_posts",JSON.stringify(a))}
+function live(){$("#prev").innerHTML=md($("#fBody").value||"*Nothing yet…*")}
+["fTitle","fCat","fDate","fTags","fExcerpt","fRefs","fBody"].forEach(id=>$("#"+id).addEventListener("input",live));
+
+/* login */
+async function unlock(u,p){const a=await getAuth();return(u===a.u&&(await sha(p))===a.pHash)}
+$("#go").onclick=async()=>{const ok=await unlock($("#u").value.trim(),$("#p").value);if(ok){try{sessionStorage.setItem("nf_session","1")}catch(e){}$("#loginWrap").hidden=true;$("#app").hidden=false;init();toast("Unlocked ✓")}else{const e=$("#e");e.textContent="Wrong username or password.";e.hidden=false}};
+$("#lockBtn").onclick=()=>{try{sessionStorage.removeItem("nf_session")}catch(e){}location.reload()};
+if(isAuthed()){$("#loginWrap").hidden=true;$("#app").hidden=false}
+
+/* existing manifest */
+let MANIFEST=[];
+async function loadManifest(){
+try{const r=await fetch("posts.json",{cache:"no-store"});MANIFEST=await r.json();$("#status").textContent="Found "+MANIFEST.length+" existing post(s). New posts will be added, old ones kept.";$("#status").className="okbox"}
+catch(e){$("#status").textContent="Could not load posts.json (are you opening this as file:// ? Open https://cerulean-jalebi-342b59.netlify.app/publisher.html instead — full ZIP needs same-site fetch). You can still download single .md below.";$("#status").className="warnbox";MANIFEST=[]}
+}
+function renderDrafts(){
+const d=getDrafts(),box=$("#drafts");
+box.innerHTML=d.length?"":'<p class="muted">No new posts queued yet.</p>';
+d.forEach(p=>{const div=document.createElement("div");div.className="draftrow";
+div.innerHTML="<span><strong>"+esc(p.title)+"</strong><br><small class='muted'>"+esc(p.id)+".md · "+esc(p.date)+" · "+esc(p.category)+"</small></span>";
+const w=document.createElement("span");
+const b1=document.createElement("button");b1.textContent="Load";b1.onclick=()=>{$("#fTitle").value=p.title;$("#fCat").value=p.category;$("#fDate").value=p.date;$("#fTags").value=(p.tags||[]).join(", ");$("#fExcerpt").value=p.excerpt||"";$("#fRefs").value=(p.refs||[]).map(r=>r.t+" | "+r.u).join("\n");$("#fBody").value=p.body;live();window.scrollTo({top:0,behavior:"smooth"})};
+const b2=document.createElement("button");b2.textContent="Delete";b2.onclick=()=>{setDrafts(getDrafts().filter(x=>x.id!==p.id));renderDrafts();toast("Removed")};
+w.append(b1,b2);div.append(w);box.append(div)});
+}
+
+$("#saveBtn").onclick=()=>{const p=curForm();if(!p.title||!p.body){toast("Add title + body first");return}
+const d=getDrafts(),i=d.findIndex(x=>x.id===p.id);if(i>=0)d[i]=p;else d.push(p);setDrafts(d);renderDrafts();toast("Saved ✓ — add more or download ZIP")};
+$("#clearBtn").onclick=()=>{["fTitle","fTags","fExcerpt","fRefs","fBody"].forEach(id=>$("#"+id).value="");live()};
+$("#impBtn").onclick=()=>$("#fileIn").click();
+$("#fileIn").onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();
+r.onload=()=>{const t=String(r.result||"");
+const m=t.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
+if(m){const meta={};m[1].split("\n").forEach(l=>{const i=l.indexOf(":");if(i>0)meta[l.slice(0,i).trim().toLowerCase()]=l.slice(i+1).trim().replace(/^"|"$/g,"")});
+$("#fTitle").value=(meta.title||f.name).replace(/^"|"$/g,"");$("#fCat").value=/market/i.test(meta.category||"")?"Market":"Misc";
+$("#fDate").value=/\d{4}-\d{2}-\d{2}/.test(meta.date||"")?meta.date:today();$("#fTags").value=meta.tags||"";$("#fExcerpt").value=(meta.excerpt||"").replace(/^"|"$/g,"");
+$("#fRefs").value=(meta.references||"").split(";").join("\n");$("#fBody").value=m[2].trim()}
+else{$("#fTitle").value=f.name.replace(/\.(txt|md)$/i,"").replace(/[-_]+/g," ");$("#fBody").value=t}
+live();toast("Imported "+f.name+" ✓")};
+r.readAsText(f);e.target.value=""};
+
+function download(name,text,type){const b=new Blob([text],{type:type||"text/plain"});const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),3000)}
+$("#mdBtn").onclick=()=>{const p=curForm();download(p.id+".md",toMD(p),"text/markdown");toast("Downloaded "+p.id+".md")};
+$("#jsonBtn").onclick=()=>{
+const d=getDrafts();const merged=MANIFEST.slice();
+d.forEach(p=>{if(!merged.find(m=>m.id===p.id))merged.push({id:p.id,file:"posts/"+p.id+".md"})});
+download("posts.json",JSON.stringify(merged,null,2),"application/json");toast("Downloaded posts.json — "+merged.length+" posts")};
+
+/* FULL ZIP */
+const SITE_FILES=["index.html","styles.css","app.js","publisher.html","netlify.toml","_headers","_redirects","robots.txt","sitemap.xml","404.html","favicon.svg","README.md"];
+$("#zipBtn").onclick=async()=>{
+if(typeof JSZip==="undefined"){toast("ZIP library offline — connect internet once and reload");return}
+const drafts=getDrafts();
+if(!drafts.length){toast("Save at least 1 post first");return}
+toast("Building ZIP…");
+try{
+const zip=new JSZip();
+// 1. core files from live site
+for(const f of SITE_FILES){try{const r=await fetch(f,{cache:"no-store"});if(!r.ok)throw 0;const t=await r.text();zip.file(f,t)}catch(e){if(f==="publisher.html"){/* self: skip if dev */}}}
+ // README may not exist on deploy; ignore failures for optional files
+// 2. old posts
+const merged=MANIFEST.slice();
+for(const m of MANIFEST){try{const r=await fetch(m.file,{cache:"no-store"});const t=await r.text();zip.file(m.file,t)}catch(e){}}
+// 3. new drafts
+drafts.forEach(p=>{const path="posts/"+p.id+".md";zip.file(path,toMD(p));if(!merged.find(m=>m.id===p.id))merged.push({id:p.id,file:path})});
+zip.file("posts.json",JSON.stringify(merged,null,2));
+const blob=await zip.generateAsync({type:"blob",compression:"DEFLATE"});
+const d=new Date().toISOString().slice(0,10);
+const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="neko-fin-update-"+d+".zip";a.click();
+setTimeout(()=>URL.revokeObjectURL(a.href),5000);
+toast("ZIP ready ✓ — drag it to Deploys (same site)");
+$("#status").textContent="ZIP built with "+merged.length+" posts ("+drafts.length+" new). Now: Netlify → cerulean-jalebi-342b59 → Deploys → drag the ZIP there. Same URL.";$("#status").className="okbox";
+}catch(err){console.error(err);toast("Build failed — open via live /publisher.html, not file://")};
+};
+
+async function init(){$("#fDate").value=today();live();renderDrafts();await loadManifest()}
+if(isAuthed())init();
+})();
+</script>
+</body>
+</html>

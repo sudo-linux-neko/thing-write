@@ -1,0 +1,233 @@
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<!-- Copyright (C) 2026 Vaibhav Agarwal -->
+
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>neko-fin — Market opinions & misc notes for learning</title>
+<meta name="description" content="neko-fin by Shrin: personal opinions on financial markets + misc notes. Educational only. Not financial advice. File-based static blog for Netlify.">
+<meta name="author" content="Shrin">
+<link rel="canonical" href="./">
+<meta name="theme-color" content="#070b16" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f6f7f4" media="(prefers-color-scheme: light)">
+<meta property="og:type" content="website">
+<meta property="og:title" content="neko-fin — learn markets, share opinions">
+<meta property="og:description" content="Personal finance-market opinions + misc writing. Educational only — not buy/sell/hold advice.">
+<meta property="og:site_name" content="neko-fin">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="neko-fin">
+<meta name="twitter:description" content="Market opinions + misc notes. Educational only.">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="manifest" href='data:application/manifest+json,{"name":"neko-fin","short_name":"neko-fin","display":"standalone","background_color":"%23070b16","theme_color":"%2300e68a"}'>
+<link rel="preload" href="styles.css" as="style">
+<link rel="preload" href="app.js" as="script">
+<link rel="stylesheet" href="styles.css">
+<script>try{var t=localStorage.getItem("nf-theme");if(t){document.documentElement.setAttribute("data-theme",t)}else{document.documentElement.setAttribute("data-theme","dark")}}catch(e){document.documentElement.setAttribute("data-theme","dark")}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Blog","name":"neko-fin","author":{"@type":"Person","name":"Shrin"},"description":"Personal opinions on financial markets and misc topics. Educational only."}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="riskbar" role="note">Educational only — not financial advice. Not a buy / sell / hold recommendation. <a href="#/disclaimer">Read disclaimer</a></div>
+
+<header class="nav" id="top">
+<div class="wrap nav-in">
+<a class="brand" href="#/" aria-label="neko-fin home">
+<span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32" width="28" height="28"><rect x="2" y="2" width="28" height="28" rx="8" fill="#00e68a"/><path d="M9 21l4-6 3 3 4-7 3 4" stroke="#070b16" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="21" r="1.6" fill="#070b16"/></svg></span>
+<span class="brand-tx"><strong>neko-fin</strong><small>market opinions · misc notes</small></span>
+</a>
+<nav class="links" aria-label="Primary">
+<a href="#/" data-nav="home">Home</a>
+<a href="#/market" data-nav="market">Markets</a>
+<a href="#/misc" data-nav="misc">Misc</a>
+<a href="#/about">About</a>
+<a href="#/disclaimer">Disclaimer</a>
+<a class="gh" href="https://github.com/thisisforlearn" target="_blank" rel="noopener">GitHub ↗</a>
+</nav>
+<div class="nav-act">
+<button id="themeBtn" class="iconbtn" aria-label="Toggle dark / light mode" title="Toggle theme">◐</button>
+<button id="writeBtn" class="btn small">Write ✎</button>
+<button id="menuBtn" class="iconbtn only-m" aria-label="Menu">☰</button>
+</div>
+</div>
+<div class="wrap mobile-links" id="mLinks" hidden>
+<a href="#/">Home</a><a href="#/market">Markets</a><a href="#/misc">Misc</a><a href="#/about">About</a><a href="#/disclaimer">Disclaimer</a><a href="https://github.com/thisisforlearn" target="_blank" rel="noopener">GitHub ↗</a>
+</div>
+<div class="ticker" aria-hidden="true"><div class="ticker-in" id="ticker">EDUCATION ONLY · NOT FINANCIAL ADVICE · NIFTY · SENSEX · INDEX FUNDS · RISK FIRST · COMPOUNDING · DIVERSIFICATION · MISC NOTES · NEKO-FIN ·&nbsp;</div></div>
+</header>
+
+<main id="main" class="wrap">
+<!-- HOME VIEW -->
+<section id="view-home">
+<div class="hero">
+<div class="hero-tx">
+<p class="kicker"><span class="dot"></span> by Shrin · opinions for learning</p>
+<h1>Understand markets.<br><span class="grad">Keep opinions honest.</span></h1>
+<p class="lede">neko-fin is a tiny file-based blog: <strong>financial-market opinions</strong> for education, plus a <strong>misc corner</strong> for anything else. No database. Posts live in <code>posts/*.md</code>. Fast on Netlify free plan.</p>
+<div class="hero-cta">
+<a class="btn" href="#latest">Read latest ↓</a>
+<a class="btn ghost" href="https://github.com/thisisforlearn" target="_blank" rel="noopener">GitHub repo ↗</a>
+</div>
+<div class="hero-meta">
+<span>⚡ 100% static</span><span>📁 file-based</span><span>🌙 dark default</span><span>🔍 search + filter</span>
+</div>
+</div>
+<div class="hero-card" id="featuredCard" aria-live="polite"></div>
+</div>
+
+<div class="toolbar" id="latest">
+<div class="chips" role="tablist" aria-label="Filter">
+<button class="chip on" data-f="all">All</button>
+<button class="chip" data-f="Market">📈 Market</button>
+<button class="chip" data-f="Misc">✨ Misc</button>
+</div>
+<label class="search"><span aria-hidden="true">🔍</span><input id="q" type="search" placeholder="Search posts, tags…" autocomplete="off"></label>
+</div>
+<p class="count" id="count"></p>
+<div class="grid" id="grid"></div>
+
+<div class="two">
+<div class="panel">
+<h2>How file-blogs work here</h2>
+<ol class="steps">
+<li>Add a <code>.md</code> file in <code>/posts</code></li>
+<li>List it in <code>posts.json</code></li>
+<li>Drag the folder to <a href="https://app.netlify.com/drop" target="_blank" rel="noopener">Netlify Drop</a> — done</li>
+</ol>
+<p class="muted">Or press <strong>Write ✎</strong> → log in → write in browser → <strong>Export .md</strong> → drop that file into <code>/posts</code>. You can also <strong>import .txt</strong>.</p>
+</div>
+<div class="panel warn">
+<h2>⚠️ Please read</h2>
+<p><strong>Not financial advice.</strong> Nothing here is a recommendation to buy, sell, or hold any security. Markets involve loss. Talk to a licensed professional for your situation.</p>
+<p><strong>AI disclosure:</strong> site code + some drafts are AI-assisted, reviewed by the author for learning.</p>
+<p><a href="#/disclaimer">Full disclaimer →</a></p>
+</div>
+</div>
+</section>
+
+<!-- POST VIEW -->
+<section id="view-post" hidden>
+<button class="back" id="backBtn">← All posts</button>
+<article class="post">
+<p class="kicker" id="pCat"></p>
+<h1 id="pTitle"></h1>
+<p class="meta" id="pMeta"></p>
+<div class="ai-note" id="pAi">🤖 AI-assisted draft, human-reviewed for education. <a href="#/disclaimer">Why disclosed?</a></div>
+<div class="prose" id="pBody"></div>
+<div class="refs" id="pRefs" hidden><h2>🔗 Links & references</h2><ul id="pRefList"></ul></div>
+<div class="share">
+<button class="btn small ghost" id="copyLink">Copy link</button>
+<a class="btn small ghost" id="ghLink" href="https://github.com/thisisforlearn" target="_blank" rel="noopener">GitHub ↗</a>
+</div>
+<div class="postnav" id="postNav"></div>
+</article>
+</section>
+
+<!-- ABOUT -->
+<section id="view-about" hidden>
+<article class="post">
+<p class="kicker">about</p>
+<h1>Hi, I'm Shrin — this is neko-fin 🐾</h1>
+<div class="prose">
+<p>I write <strong>opinions about financial markets</strong> to learn in public — indexes, risk, behaviour, basics — plus a <strong>misc section</strong> for anything I want: notes, ideas, life.</p>
+<p>This blog is <strong>for education</strong>. I am not your advisor. I don't know your money, goals, or risk tolerance.</p>
+<h2>What you'll find</h2>
+<ul><li><strong>Market:</strong> beginner-friendly explainers + my opinions (labelled as opinion).</li><li><strong>Misc:</strong> anything else I feel like writing.</li><li><strong>References:</strong> every market post links sources so you can verify.</li></ul>
+<h2>How it's built</h2>
+<p>100% static HTML/CSS/JS. Posts are <code>.md</code> files in <code>/posts</code>. No database, no tracking, works on Netlify free plan. Code + drafts are AI-assisted and human-reviewed.</p>
+<p>→ Code: <a href="https://github.com/thisisforlearn" target="_blank" rel="noopener">github.com/thisisforlearn</a></p>
+</div>
+</article>
+</section>
+
+<!-- DISCLAIMER -->
+<section id="view-disclaimer" hidden>
+<article class="post">
+<p class="kicker">legal · please read</p>
+<h1>Disclaimer</h1>
+<div class="prose">
+<p><strong>Last updated: October 2026.</strong> By reading neko-fin you agree to this page.</p>
+<h2>1. Educational only — not financial advice</h2>
+<p>All content (posts, examples, opinions) is for <strong>general education and information only</strong>. It is <strong>not</strong> financial, investment, tax, legal, or professional advice. It is <strong>not a recommendation to buy, sell, or hold</strong> any security, fund, or product. I don't know your income, goals, risk tolerance, or laws.</p>
+<h2>2. No professional relationship</h2>
+<p>I am not a registered investment advisor. Reading this site does not create an advisor-client or fiduciary relationship.</p>
+<h2>3. Risk + no guarantees</h2>
+<p>Markets carry risk, including loss of principal. Past performance does not predict future results. Rules and prices change fast — I aim for accuracy but make no warranty of completeness or timeliness. Verify independently. Consult a <strong>licensed professional</strong> before acting.</p>
+<h2>4. Opinions are mine</h2>
+<p>Market posts are <strong>personal opinions for learning</strong>, not facts about what you should do. If I’m wrong, tell me via GitHub.</p>
+<h2>5. AI disclosure</h2>
+<p><strong>Transparency:</strong> this site's code was written with AI assistance, and some post drafts were AI-assisted then human-reviewed/edited by Shrin. AI can make mistakes — especially on finance. Always double-check with primary sources linked under “Links &amp; references”.</p>
+<h2>6. External links</h2>
+<p>Links/references are for convenience. I don’t control third-party sites and am not responsible for their content, accuracy, or practices.</p>
+<h2>7. Liability</h2>
+<p>You use this site at your own risk. To the maximum extent permitted by law, neko-fin and its author are not liable for losses or damages from use of this content.</p>
+<p>Questions? Open an issue at <a href="https://github.com/thisisforlearn" target="_blank" rel="noopener">github.com/thisisforlearn</a>.</p>
+</div>
+</article>
+</section>
+</main>
+
+<footer>
+<div class="wrap foot">
+<div>
+<strong>neko-fin</strong> <span class="muted">© 2026 Shrin · opinions for education</span>
+<p class="muted small">Not financial advice. Not buy/sell/hold. AI-assisted code + drafts, human-reviewed. <a href="#/disclaimer">Disclaimer</a> · <a href="https://github.com/thisisforlearn" target="_blank" rel="noopener">GitHub</a></p>
+</div>
+<button class="iconbtn" id="topBtn" aria-label="Back to top">↑</button>
+</div>
+</footer>
+
+<!-- LOGIN MODAL -->
+<div class="modal" id="loginModal" hidden>
+<div class="sheet" role="dialog" aria-modal="true" aria-label="Author login">
+<h2>Author login</h2>
+<p class="muted small">Static-site note: this login is <strong>browser-local only</strong> (not real server security). Anyone with the file can read posts. Use it to prevent accidental edits on your device.</p>
+<label>Username<input id="loginUser" autocomplete="username" value="nekofin"></label>
+<label>Password<input id="loginPass" type="password" autocomplete="current-password" placeholder="••••••••"></label>
+<p class="err" id="loginErr" hidden></p>
+<div class="row"><button class="btn" id="loginGo">Unlock editor</button><button class="btn ghost" id="loginCancel">Cancel</button></div>
+</div>
+</div>
+
+<!-- EDITOR MODAL -->
+<div class="modal big" id="editorModal" hidden>
+<div class="sheet" role="dialog" aria-modal="true" aria-label="Write a post">
+<div class="ed-head"><h2>Write a post ✎</h2><div class="row"><button class="btn small ghost" id="edCreds">Change login</button><button class="btn small ghost" id="edClose">Close ✕</button></div></div>
+<div class="ed-grid">
+<div>
+<label>Title<input id="fTitle" placeholder="e.g. Why I track Nifty PE"></label>
+<div class="row2">
+<label>Category<select id="fCat"><option>Market</option><option>Misc</option></select></label>
+<label>Date<input id="fDate" type="date"></label>
+</div>
+<label>Tags (comma)<input id="fTags" placeholder="nifty, risk, beginner"></label>
+<label>Excerpt (1–2 lines)<textarea id="fExcerpt" rows="2" placeholder="Short summary shown on cards"></textarea></label>
+<label>Links & references (one per line: Title | https://…)<textarea id="fRefs" rows="3" placeholder="NSE India | https://www.nseindia.com"></textarea></label>
+<label>Body (Markdown — or import .txt/.md)<textarea id="fBody" rows="12" placeholder="## My opinion&#10;Write here… **bold**, [link](https://…)"></textarea></label>
+<div class="row wrap-btns">
+<button class="btn small" id="importBtn">Import .txt / .md 📥</button>
+<input type="file" id="fileIn" accept=".txt,.md,.markdown" hidden>
+<button class="btn small ghost" id="previewBtn">Preview 👁</button>
+<button class="btn small" id="saveBtn">Save to browser 💾</button>
+<button class="btn small ghost" id="exportBtn">Export .md ⬇</button>
+</div>
+<div id="credsBox" hidden>
+<h3>Change username / password</h3>
+<label>Old password<input id="cOld" type="password"></label>
+<div class="row2"><label>New username<input id="cUser"></label><label>New password<input id="cPass" type="password"></label></div>
+<button class="btn small" id="cSave">Update login</button>
+<p class="muted small">Tip: after exporting .md, put the file in <code>/posts</code>, add it to <code>posts.json</code>, re-drop folder on Netlify to publish for everyone. Browser-saves show instantly on your device only.</p>
+</div>
+<h3>Your browser-saved posts</h3><ul id="draftList" class="drafts"></ul>
+</div>
+<div><h3>Live preview</h3><div class="prose preview" id="livePrev"></div></div>
+</div>
+</div>
+</div>
+
+<div id="toast" class="toast" hidden></div>
+<script src="app.js" defer></script>
+</body>
+</html>
